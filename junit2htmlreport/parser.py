@@ -113,7 +113,7 @@ class Class(AnchorBase):
         Render this test class as html
         :return:
         """
-        cases = [x.html() for x in self.cases]
+        cases = [x.html() for x in self.cases if x.failed()]
 
         return """
         <hr size="2"/>
@@ -261,14 +261,14 @@ class Case(AnchorBase, ToJunitXmlBase):
         stdout = tag.text(self.stdout)
         stderr = tag.text(self.stderr)
 
-        if self.skipped:
-            skipped = """
-            <hr size="1"/>
-            <div class="skipped"><b>Skipped: {msg}</b><br/>
-                <pre>{skip}</pre>
-            </div>
-            """.format(msg=tag.text(self.skipped_msg),
-                       skip=tag.text(self.skipped))
+#        if self.skipped:
+#            skipped = """
+#            <hr size="1"/>
+#            <div class="skipped"><b>Skipped: {msg}</b><br/>
+#                <pre>{skip}</pre>
+#            </div>
+#            """.format(msg=tag.text(self.skipped_msg),
+#                       skip=tag.text(self.skipped))
 
         if self.failed():
             failure = """
@@ -300,7 +300,6 @@ class Case(AnchorBase, ToJunitXmlBase):
                 <span class="testclassname">{testclassname}</span><br/>
                 <span class="duration">Time Taken: {duration}s</span>
             </div>
-            {skipped}
             {failure}
             <hr size="1"/>
             {properties}
@@ -312,7 +311,6 @@ class Case(AnchorBase, ToJunitXmlBase):
                    testclassname=self.testclass.name,
                    duration=self.duration,
                    failure=failure,
-                   skipped=skipped,
                    properties="".join(properties),
                    stdoe=render_stdoe())
 
@@ -481,13 +479,9 @@ class Suite(AnchorBase, ToJunitXmlBase):
         return """
         <ul>
             {failed}
-            {skips}
-            <li>All Test Classes
-            <ul>{classlist}</ul>
             </li>
         </ul>
         """.format(failed=fails,
-                   skips=skips,
                    classlist="".join(classlist))
 
     def html(self):
