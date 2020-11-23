@@ -47,7 +47,7 @@ class HtmlHeadMixin(object):
         return """
         <html>
         <head>
-            <meta charset=utf-8" />
+            <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
             <title>{name} - Junit Test Report</title>
             <style type="text/css">
               {css}
